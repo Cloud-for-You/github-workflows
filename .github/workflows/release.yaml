@@ -21,8 +21,12 @@ jobs:
       - name: Get version
         id: version
         run: |
-          VERSION="${GITHUB_REF#refs/*/v}"
-          echo "::set-output name=version::$VERSION"
+          if [ "GITHUB_REF_TYPE" = "tag" ]; then
+            VERSION="${GITHUB_REF#refs/*/v}"
+          else
+            VERSION="0.0.0-${GITHUB_REF_NAME//[\/]/-}.${GITHUB_SHA::8}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: Build Image
         run: |
           echo ${{ steps.version.outputs.version }}
