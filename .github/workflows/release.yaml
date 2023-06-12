@@ -1,0 +1,24 @@
+name: Release kubernetes application
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build image
+    runs-on:
+      - ubuntu-latest
+    steps:
+      # Checkout repository to workplace
+      - name: Checkout
+        uses: actions/checkout@v3
+      # Get version for release artifacts
+      - name: Get version
+        id: version
+        run: |
+          VERSION="${GITHUB_REF#refs/*/v}"
+          echo "::set-output name=version::$VERSION"
+      - name: Build Image
+        run: |
+          echo ${{ steps.version.outputs.version }}
+
+        
