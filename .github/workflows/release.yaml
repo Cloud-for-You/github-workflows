@@ -60,11 +60,11 @@ jobs:
     name: Package kustomize
     runs-on:
       - ubuntu-latest
-      steps:
-        - name: Foo
-          shell: bash
-          run: |
-            echo "Bar"
+    steps:
+      - name: Foo
+        shell: bash
+        run: |
+          echo "Bar"
 
 
 
