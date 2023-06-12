@@ -34,8 +34,8 @@ jobs:
           else
             VERSION="0.0.0-${GITHUB_REF_NAME//[\/]/-}.${GITHUB_SHA::8}"
           fi
-          echo "image_version=$VERSION" >> $GITHUB_OUTPUT"
-          echo "kustomize_version=$VERSION >> $GITHUB_OUTPUT"
+          echo "image_version=$VERSION" >> $GITHUB_OUTPUT
+          echo "kustomize_version=$VERSION" >> $GITHUB_OUTPUT
       # Checkout code from repository to workplace
       - name: Checkout
         uses: actions/checkout@v3
@@ -54,7 +54,7 @@ jobs:
         shell: bash
         run: |
           echo ${{ steps.version.outputs.version }}
-          
+
   package-kustomize:
     name: Package kustomize
     runs-on:
