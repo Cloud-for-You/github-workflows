@@ -54,8 +54,7 @@ jobs:
         shell: bash
         run: |
           echo ${{ steps.version.outputs.version }}
-      - name: Kustomize archieve
-
+          
   package-kustomize:
     name: Package kustomize
     runs-on:
