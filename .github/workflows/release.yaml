@@ -7,28 +7,65 @@ on:
         default: "v1.29.0"
         required: false
         type: string
+      RUN_UNIT_TESTS:
+        description: "Run unit tests will run the test target in the Makefile"
+        default: false
+        required: false
+        type: boolean
+      BUILD_KUSTOMIZE_PACKAGE:
+        description: "Building kustomize artifact and release"
+        default: false
+        required: false
+        type: boolean
 
 jobs:
-  build:
-    name: Build image
+  setup:
+    name: Setup
     runs-on:
       - ubuntu-latest
     steps:
-      # Checkout repository to workplace
-      - name: Checkout
-        uses: actions/checkout@v3
       # Get version for release artifacts
       - name: Get version
         id: version
+        shell: bash
         run: |
           if [ "GITHUB_REF_TYPE" = "tag" ]; then
             VERSION="${GITHUB_REF#refs/*/v}"
           else
             VERSION="0.0.0-${GITHUB_REF_NAME//[\/]/-}.${GITHUB_SHA::8}"
           fi
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "image_version=$VERSION" >> $GITHUB_OUTPUT"
+          echo "kustomize_version=$VERSION >> $GITHUB_OUTPUT"
+      # Checkout code from repository to workplace
+      - name: Checkout
+        uses: actions/checkout@v3
+
+    outputs:
+      image_version: ${{ steps.version.outputs.image_version }}
+      kustomize_version: ${{ steps.version.outputs.kustomize_version }}
+
+  build-image:
+    name: Build image
+    runs-on:
+      - ubuntu-latest
+    steps:    
+      # Build artifacts
       - name: Build Image
+        shell: bash
         run: |
           echo ${{ steps.version.outputs.version }}
+      - name: Kustomize archieve
+
+  package-kustomize:
+    name: Package kustomize
+    runs-on:
+      - ubuntu-latest
+      steps:
+        - name: Foo
+          shell: bash
+          run: |
+            echo "Bar"
+
+
 
         
