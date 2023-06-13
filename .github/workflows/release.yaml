@@ -46,21 +46,6 @@ jobs:
       image_version: ${{ steps.version.outputs.image_version }}
       kustomize_version: ${{ steps.version.outputs.kustomize_version }}
 
-  test-operator:
-    name: Test operator
-    runs-on:
-      - self-hosted
-      - Linux
-      - ARM64
-    if: ${{ inputs.RUN_UNIT_TESTS }}
-    needs:
-      - setup
-    steps:
-      - name: NOT DEFINED
-        shell: bash
-        run: |
-          echo "JOB IS NOT DEFINED"
-
   build-image:
     name: Build image
     runs-on:
@@ -91,6 +76,23 @@ jobs:
         shell: bash
         run: |
           echo "Bar"
+  
+  test-operator:
+    name: Test operator
+    runs-on:
+      - self-hosted
+      - Linux
+      - ARM64
+    if: ${{ inputs.RUN_UNIT_TESTS }}
+    needs:
+      - setup
+      - build-image
+      - package-kustomize
+    steps:
+      - name: NOT DEFINED
+        shell: bash
+        run: |
+          echo "JOB IS NOT DEFINED"
   
   release-version:
     name: Release version
