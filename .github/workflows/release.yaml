@@ -1,4 +1,4 @@
-name: Release kubernetes application
+name: Release Operator-SDK
 on:
   workflow_call:
     inputs:
@@ -48,6 +48,8 @@ jobs:
 
   build-image:
     name: Build image
+    needs:
+      - setup
     runs-on:
       - self-hosted
       - Linux
@@ -57,10 +59,12 @@ jobs:
       - name: Build Image
         shell: bash
         run: |
-          echo ${{ steps.version.outputs.version }}
+          echo ${{ needs.setup.outputs.image_version }}
 
   package-kustomize:
     name: Package kustomize
+    needs:
+      - setup
     runs-on:
       - self-hosted
       - Linux
@@ -70,7 +74,3 @@ jobs:
         shell: bash
         run: |
           echo "Bar"
-
-
-
-        
