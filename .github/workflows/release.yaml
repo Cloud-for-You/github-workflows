@@ -57,6 +57,7 @@ jobs:
       - setup
     steps:
       - name: NOT DEFINED
+        shell: bash
         run: |
           echo "JOB IS NOT DEFINED"
 
@@ -90,3 +91,21 @@ jobs:
         shell: bash
         run: |
           echo "Bar"
+  
+  release-version:
+    name: Release version
+    runs-on:
+      - self-hosted
+      - Linux
+      - ARM64
+    needs:
+      - setup
+      - test-operator
+    steps:
+      - name: Release version
+        shell: bash
+        run: |
+          echo "RELESE VERSION"
+
+
+    
