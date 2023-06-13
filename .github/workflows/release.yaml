@@ -23,7 +23,7 @@ jobs:
     name: Setup
     runs-on:
       - self-hosted
-      - ubuntu-latest
+      - Linux
       - ARM64
     steps:
       # Get version for release artifacts
@@ -50,7 +50,7 @@ jobs:
     name: Build image
     runs-on:
       - self-hosted
-      - ubuntu-latest
+      - Linux
       - ARM64
     steps:    
       # Build artifacts
@@ -63,7 +63,7 @@ jobs:
     name: Package kustomize
     runs-on:
       - self-hosted
-      - ubuntu-latest
+      - Linux
       - ARM64
     steps:
       - name: Foo
