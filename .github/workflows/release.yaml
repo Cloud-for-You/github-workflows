@@ -69,22 +69,18 @@ jobs:
     env:
       IMAGE_VERSION: ${{ needs.setup.outputs.image_version }}
     steps:    
-      # Build artifacts
-      - name: Build Image
-        shell: bash
-        run: |
-          echo "docker push ${{ env.DOCKER_REGISTRY }}/:${DOCKER_IMAGE_VERSION}"
       # Login docker registry
       - name: Login to quay.io
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.DOCKER_REGISTRY }}
-          username: ${{ secrets.DOCKER_REGISTRY_ID }}
-          password: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
+          registry: quay.io
+          username: foo
+          password: bar
+      # Build and push image to docker registry
       - name: Building & Pushing Docker Image
         shell: bash
         run: |
-          echo "Build image"
+          echo "Build image quay.io/arganization/image:${DOCKER_IMAGE_VERSION}"
 
   package-kustomize:
     name: Package kustomize
