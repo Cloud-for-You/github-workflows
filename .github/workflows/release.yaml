@@ -38,6 +38,10 @@ jobs:
       - Linux
       - ARM64
     steps:
+      # Prepare docker to self-hosted runner
+      - name: Prepare docker
+        uses: docker-practice/actions-setup-docker@master
+        timeout-minutes: 12
       # Get version for release artifacts
       - name: Get version
         id: version
