@@ -81,7 +81,7 @@ jobs:
           buildkitd-flags: --debug
       # Login docker registry
       - name: Login to quay.io
-        uses: docker/login-action@v2
+        uses: docker/login-action@v1
         with:
           registry: ${{ vars.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_REGISTRY_ID }}
