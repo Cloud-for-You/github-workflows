@@ -70,8 +70,6 @@ jobs:
       - ARM64
     needs:
       - setup
-    env:
-      IMAGE_VERSION: ${{ needs.setup.outputs.image_version }}
     steps:
       ## Prepare docker
       #- name: Set up Docker Buildx
@@ -101,10 +99,15 @@ jobs:
     needs:
       - setup
     steps:
-      - name: Foo
+      - name: Build kustomize package
+        uses: imranismail/setup-kustomize@v2
+      - name:
         shell: bash
         run: |
-          echo "Bar"
+          pushd ./config
+          ls -la
+          kustomize edit set image ${{ vars.DOCKER_REGISTRY }}/${{ needs.setup.outputs.image_name }}:${{ needs.setup.outputs.image_version }}"
+          popd
   
   test-operator:
     name: Test operator
