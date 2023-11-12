@@ -44,20 +44,20 @@ jobs:
       - name: Set cache name
         id: cache-name
         run: |
-          echo 'cache-name=${{ needs.set-vars.outputs.project }}-cache-${{ matrix.platform }}' | sed 's:/:-:g' >> $GITHUB_OUTPUT
+          echo 'cache-name=$PROJECT-cache-${{ matrix.platform }}' | sed 's:/:-:g' >> $GITHUB_OUTPUT
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           platforms: ${{ matrix.platform }}
-          tags: ${{ needs.set-vars.outputs.project }}:${{ github.ref_name }}
+          tags: $PROJECT:${{ github.ref_name }}
           cache-from: type=gha
-          cache-to: type=local,dest=/tmp/${{ needs.set-vars.outputs.project }}-cache,mode=max
+          cache-to: type=local,dest=/tmp/$PROJECT-cache,mode=max
       - name: Upload cache
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.cache-name.outputs.cache-name }}
-          path: /tmp/${{ needs.set-vars.outputs.project }}-cache
+          path: /tmp/$PROJECT-cache
           if-no-files-found: error
           retention-days: 1
 
@@ -79,7 +79,7 @@ jobs:
       - name: Download cache
         uses: actions/download-artifact@v3
         with:
-          path: /tmp/${{ needs.set-vars.outputs.project }}-cache
+          path: /tmp/$PROJECT-cache
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
