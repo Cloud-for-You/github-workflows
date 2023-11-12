@@ -14,8 +14,10 @@ jobs:
         run: |
           input="${{ github.repository }}"
           read -r var1 var2 <<< "$(sed -E 's|(.*)/(.*)|\1 \2|' <<< "$input")"
-          echo "organization=${var1,,}" >> $GITHUB_ENV
-          echo "project=${var2,,}" >> $GITHUB_ENV
+          var1_lover="${var1,,}"
+          var2_lover="${var2,,}"
+          echo "organization=${var1_lower}" >> $GITHUB_ENV
+          echo "project=${var2_lower}" >> $GITHUB_ENV
 
   build:
     runs-on: ubuntu-latest
