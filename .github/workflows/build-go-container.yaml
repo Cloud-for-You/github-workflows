@@ -45,15 +45,15 @@ jobs:
       - name: Set cache name
         id: cache-name
         run: |
-          echo 'cache-name=$PROJECT-cache-${{ matrix.platform }}' | sed 's:/:-:g' >> $GITHUB_OUTPUT
+          echo "cache-name=${PROJECT}-cache-${{ matrix.platform }}" | sed 's:/:-:g' >> $GITHUB_OUTPUT
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           platforms: ${{ matrix.platform }}
-          tags: $PROJECT:${{ github.ref_name }}
+          tags: ${PROJECT}:${{ github.ref_name }}
           cache-from: type=gha
-          cache-to: type=local,dest=/tmp/$PROJECT-cache,mode=max
+          cache-to: type=local,dest=/tmp/${PROJECT}-cache,mode=max
       - name: Upload cache
         uses: actions/upload-artifact@v3
         with:
@@ -81,7 +81,7 @@ jobs:
       - name: Download cache
         uses: actions/download-artifact@v3
         with:
-          path: /tmp/$PROJECT-cache
+          path: /tmp/${PROJECT}-cache
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
