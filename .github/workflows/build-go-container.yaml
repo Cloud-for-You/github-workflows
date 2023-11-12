@@ -3,8 +3,29 @@ on:
   workflow_call:
 
 jobs:
+  set-vars:
+    runs-on: ubuntu-latest
+    outputs:
+      organization: ${{ steps.repository.outputs.organization }}
+      project: ${{ steps.repository.outputs.project }}
+    steps:
+      - name: Repository
+        id: repository
+        run: 
+          input="Cloud-for-You/storage-operator"
+          IFS='/' read -r ORG PROJECT <<< "${{ github.repository }}"
+          ORG=$(echo "$ORG" | tr '[:upper:]' '[:lower:]')
+          PROJECT=$(echo "$PROJECT" | tr '[:upper:]' '[:lower:]')
+          echo "organization=$ORG" >> $GITHUB_ENV
+          echo "project=$PROJECT" >> $GITHUB_ENV
+
   build:
     runs-on: ubuntu-latest
+    needs:
+      - set-vars
+    env:
+      ORGANIZATION: ${{ needs.set-vars.outputs.organization }}
+      PROJECT: ${{ needs.set-vars.outputs.project }}
     strategy:
       matrix:
         platform:
@@ -43,7 +64,12 @@ jobs:
 
   push:
     runs-on: ubuntu-latest
-    needs: build
+    needs:
+      - set-vars
+      - build
+    env:
+      ORGANIZATION: ${{ needs.set-vars.outputs.organization }}
+      PROJECT: ${{ needs.set-vars.outputs.project }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -51,36 +77,26 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
       - name: Download cache
         uses: actions/download-artifact@v3
         with:
           path: /tmp/secrets-provider-for-k8s-cache
-
-      - name: Get lowercase GitHub username
-        id: repository_owner
-        uses: ASzc/change-string-case-action@v5
-        with:
-          string: ${{ github.repository }}
-  
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
         with:
           images: |
-            quay.io/${{ steps.repository_owner.outputs.lowercase }}
+            quay.io/${ORGANIZATION}/${PROJECT}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}}
-
       - name: Login to QUAY.IO
         uses: docker/login-action@v2
         with:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_TOKEN }}
-
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
