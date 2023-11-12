@@ -35,6 +35,9 @@ jobs:
         run: |
           echo "ORGANIZATION=${{ needs.setup.outputs.organization }}" >> $GITHUB_ENV
           echo "PROJECT=${{ needs.setup.outputs.project }}" >> $GITHUB_ENV
+      - name: TEST
+        run: |
+          echo "$PROJECT"
       - name: Checkout
         uses: actions/checkout@v3
         with:
