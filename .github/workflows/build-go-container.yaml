@@ -16,8 +16,8 @@ jobs:
           read -r var1 var2 <<< "$(sed -E 's|(.*)/(.*)|\1 \2|' <<< "$input")"
           var1_lower="${var1,,}"
           var2_lower="${var2,,}"
-          echo "organization=${var1_lower}" >> $GITHUB_ENV
-          echo "project=${var2_lower}" >> $GITHUB_ENV
+          echo "organization=${var1_lower}" >> $GITHUB_OUTPUT
+          echo "project=${var2_lower}" >> $GITHUB_OUTPUT
 
   build:
     runs-on: ubuntu-latest
