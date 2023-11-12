@@ -15,8 +15,9 @@ jobs:
           input="${{ github.repository }}"
           ORG="${input%%/*}"
           PROJECT="${input#*/}"
-          echo "organization=${ORG,,}" >> $GITHUB_ENV
-          echo "project=${PROJECT,,}" >> $GITHUB_ENV
+
+          echo "::set-output name=organization::${ORG}"
+          echo "::set-output name=project::${PROJECT}"
 
   build:
     runs-on: ubuntu-latest
