@@ -13,8 +13,7 @@ jobs:
         id: repository
         run: 
           input="Cloud-for-You/storage-operator"
-          IFS='/' read -r var1 var2 <<< "${{ github.repository }}"
-          ORG="${var1,,}"
+          IFS='/' read -r var1 var2 <<< "$(echo "${{ github.repository }}" | tr -cd '[:print:]')"
           PROJECT="${var2,,}"
           echo "organization=${ORG}" >> $GITHUB_ENV
           echo "project=${PROJECT}" >> $GITHUB_ENV
