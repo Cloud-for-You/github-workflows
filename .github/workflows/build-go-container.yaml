@@ -2,9 +2,9 @@ name: Build GO container
 on:
   workflow_call:
     secrets:
-      container_registry_username:
+      QUAY_USERNAME:
         required: false
-      container_registry_token:
+      QUAY_TOKEN:
         required: false
 
 jobs:
