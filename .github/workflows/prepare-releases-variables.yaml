@@ -29,7 +29,11 @@ jobs:
       version: ${{ steps.variables.outputs.new_version }}
       tag: ${{ steps.variables.outputs.tag_name }}
     steps:
-      - name: Set variables
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Set variables for release
         id: variables
         run: |
           setOutput() {
