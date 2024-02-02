@@ -23,8 +23,8 @@ jobs:
     outputs:
       organization: ${{ steps.repository.outputs.organization }}
       project: ${{ steps.repository.outputs.project }}
-      version: ${{ steps.version.outputs.new_version }}
-      tag: ${{ steps.version.outputs.tag_name }}
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
