@@ -18,7 +18,7 @@ jobs:
       - name: DEBUG setup output
         shell: bash
         run: |
-          echo ${{ needs.setup.outputs.version }}
+          echo "Version ${{ needs.setup.outputs.version }}"
 
   build:
     runs-on: ubuntu-latest
