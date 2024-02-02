@@ -25,5 +25,5 @@ jobs:
         id: version
         uses: rymndhng/release-on-push-action@v0.28.0
         with:
-          bump_version_scheme: minor
+          bump_version_scheme: norelease
           tag_prefix: v
