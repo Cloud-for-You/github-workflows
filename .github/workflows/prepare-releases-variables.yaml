@@ -14,9 +14,6 @@ on:
       tag:
         description: "Application release tag (eg. Tag for docker container)"
         value: ${{ jobs.variables.outputs.tag }}
-      upload_url:
-        description: "Where is uploaded releases artifacts"
-        value: ${{ jobs.variables.outputs.upload_url }}
 
 jobs:
   variables:
