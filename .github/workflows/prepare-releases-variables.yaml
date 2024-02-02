@@ -23,8 +23,8 @@ jobs:
     outputs:
       organization: ${{ steps.repository.outputs.organization }}
       project: ${{ steps.repository.outputs.project }}
-      version: ${{ steps.version.outputs.version }}
-      tag: ${{ steps.version.outputs.tag }}
+      version: ${{ steps.version.outputs.new_version }}
+      tag: ${{ steps.version.outputs.new_tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -49,9 +49,7 @@ jobs:
             echo "${1}=${2}" >> "$GITHUB_OUTPUT"
           }
           
-          currentBranch=$(git rev-parse --abbrev-ref HEAD)
-          new_version=v0.0.0
 
           
-          setOutput version ${currentBranch}
-          setOutput tag ${new_version}
+          setOutput new_version nova_verze
+          setOutput new_tag novy_tag
