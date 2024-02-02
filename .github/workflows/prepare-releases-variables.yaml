@@ -1,6 +1,22 @@
 name: Prepare release variables
 on:
   workflow_call:
+    outputs:
+      organization:
+        description: ""
+        value: ${{ jobs.variables.outputs.organization }}
+      project:
+        description: ""
+        value: ${{ jobs.variables.outputs.project }}
+      version:
+        description: ""
+        value: ${{ jobs.variables.outputs.version }}
+      tag:
+        description: ""
+        value: ${{ jobs.variables.outputs.tag }}
+      artifacts_url:
+        description: ""
+        value: ${{ jobs.variables.outputs.upload_url }}
 
 jobs:
   variables:
@@ -12,7 +28,7 @@ jobs:
       project: ${{ steps.repository.outputs.project }}
       version: ${{ steps.version.outputs.version }}
       tag: ${{ steps.version.outputs.tag_name }}
-      artifacts_url: ${{ steps.version.outputs.upload_url }}
+      upload_url: ${{ steps.version.outputs.upload_url }}
     steps:
       - name: Repository
         id: repository
