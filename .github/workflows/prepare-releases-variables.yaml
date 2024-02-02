@@ -5,8 +5,6 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     outputs:
       organization: ${{ steps.repository.outputs.organization }}
       project: ${{ steps.repository.outputs.project }}
