@@ -3,19 +3,19 @@ on:
   workflow_call:
     outputs:
       organization:
-        description: ""
+        description: "Organization (eg. folder in docker registry)"
         value: ${{ jobs.variables.outputs.organization }}
       project:
-        description: ""
+        description: "Project name (eg. container name)"
         value: ${{ jobs.variables.outputs.project }}
       version:
-        description: ""
+        description: "Application release version"
         value: ${{ jobs.variables.outputs.version }}
       tag:
-        description: ""
+        description: "Application release tag (eg. Tag for docker container)"
         value: ${{ jobs.variables.outputs.tag }}
       artifacts_url:
-        description: ""
+        description: "Where is uploaded releases artifacts"
         value: ${{ jobs.variables.outputs.upload_url }}
 
 jobs:
