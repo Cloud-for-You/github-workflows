@@ -53,7 +53,22 @@ jobs:
           setOutput() {
             echo "${1}=${2}" >> "$GITHUB_OUTPUT"
           }
+          currentBranch=$(git rev-parse --abbrev-ref HEAD)
           releaseBranches=${{ inputs.releaseBranch}}
+          IFS=',' read -ra branch <<< "$releaseBranches"
+          for b in "${branch[@]}"; do
+            # check if ${currentBranch} is in ${releaseBranches} | exact branch match
+            if [[ "$currentBranch" == "$b" ]]; then
+              preRelease="false"
+            fi
+            # verify non specific branch names like  .* release/* if wildcard filter then =~
+            if [ "$b" != "${b//[\[\]|.? +*]/}" ] && [[ "$currentBranch" =~ $b ]]; then
+              preRelease="false"
+            fi
+          done
+          echo "preRelease = $preRelease"
+
+
 
           
           setOutput new_version $releaseBranches
