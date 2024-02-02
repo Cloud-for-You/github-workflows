@@ -1,10 +1,12 @@
-name: Setup build project
+name: Prepare release variables
 on:
   workflow_call:
 
 jobs:
   setup:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     outputs:
       organization: ${{ steps.repository.outputs.organization }}
       project: ${{ steps.repository.outputs.project }}
