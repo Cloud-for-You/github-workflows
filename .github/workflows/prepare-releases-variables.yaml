@@ -23,7 +23,7 @@ jobs:
           echo "project=${var2,,}" >> $GITHUB_OUTPUT
       - name: Tag and version
         id: version
-        uses: rymndhng/release-on-push-action@master
+        uses: rymndhng/release-on-push-action@v0.28.0
         with:
           bump_version_scheme: minor
           tag_prefix: v
