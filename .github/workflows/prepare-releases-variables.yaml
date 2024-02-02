@@ -24,22 +24,24 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     outputs:
-      organization: ${{ steps.repository.outputs.organization }}
-      project: ${{ steps.repository.outputs.project }}
-      version: ${{ steps.version.outputs.version }}
-      tag: ${{ steps.version.outputs.tag_name }}
-      upload_url: ${{ steps.version.outputs.upload_url }}
+      organization: ${{ steps.variables.outputs.organization }}
+      project: ${{ steps.variables.outputs.project }}
+      version: ${{ steps.variables.outputs.new_version }}
+      tag: ${{ steps.variables.outputs.tag_name }}
     steps:
-      - name: Repository
-        id: repository
+      - name: Get actual tag
+        id: get_actual_tag
+        run: |
+          echo "tag=$(git describe --tags --abbrev=0 || echo "v0.0.0")" >> $GITHUB_OUTPUT
+      - name: Set variables
+        id: variables
         run: |
           input="${{ github.repository }}"
           read -r var1 var2 <<< "$(sed -E 's|(.*)/(.*)|\1 \2|' <<< "$input")"
+          level=${{ github.event.inputs.level || 'patch' }}
+          new_version=$(semver bump $level ${{ steps.get_actual_tag.outputs.tag }}
+
           echo "organization=${var1,,}" >> $GITHUB_OUTPUT
           echo "project=${var2,,}" >> $GITHUB_OUTPUT
-      - name: Tag and version
-        id: version
-        uses: rymndhng/release-on-push-action@v0.28.0
-        with:
-          bump_version_scheme: major
-          tag_prefix: v
+          echo "version=${new_version}" >> $GITHUB_OUTPUT
+          echo "tag=${new_version}" >> $GITHUB_OUTPUT
