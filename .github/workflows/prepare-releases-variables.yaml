@@ -5,6 +5,7 @@ on:
       releaseBranch:
         required: false
         type: string
+        default: master,main
     outputs:
       organization:
         description: "Organization (eg. folder in docker registry)"
@@ -52,7 +53,7 @@ jobs:
           setOutput() {
             echo "${1}=${2}" >> "$GITHUB_OUTPUT"
           }
-          releaseBranches=${${{ inputs.releaseBranch}}:-master,main}
+          releaseBranches=${{ inputs.releaseBranch}}
 
           
           setOutput new_version $releaseBranches
