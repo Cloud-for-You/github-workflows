@@ -1,6 +1,10 @@
 name: Prepare release variables
 on:
   workflow_call:
+    inputs:
+      releaseBranch:
+        required: false
+        type: string
     outputs:
       organization:
         description: "Organization (eg. folder in docker registry)"
@@ -48,8 +52,8 @@ jobs:
           setOutput() {
             echo "${1}=${2}" >> "$GITHUB_OUTPUT"
           }
-          
+          releaseBranches=${${{ inputs.releaseBranch}}:-master,main}
 
           
-          setOutput new_version nova_verze
+          setOutput new_version $releaseBranches
           setOutput new_tag novy_tag
