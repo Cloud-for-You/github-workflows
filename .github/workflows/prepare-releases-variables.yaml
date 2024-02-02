@@ -29,22 +29,21 @@ jobs:
       version: ${{ steps.variables.outputs.new_version }}
       tag: ${{ steps.variables.outputs.tag_name }}
     steps:
-      - name: Get actual tag
-        id: get_actual_tag
-        run: |
-          echo "tag=$(git describe --tags --abbrev=0 || echo "v0.0.0")" >> $GITHUB_OUTPUT
-      - name: Install prerequisite
-        run: |
-          npm install -g semver
       - name: Set variables
         id: variables
         run: |
+          setOutput() {
+            echo "${1}=${2}" >> "$GITHUB_OUTPUT"
+          }
+
           input="${{ github.repository }}"
           read -r var1 var2 <<< "$(sed -E 's|(.*)/(.*)|\1 \2|' <<< "$input")"
-          level=${{ github.event.inputs.level || 'patch' }}
-          new_version=$(semver bump $level ${{ steps.get_actual_tag.outputs.tag }})
 
-          echo "organization=${var1,,}" >> $GITHUB_OUTPUT
-          echo "project=${var2,,}" >> $GITHUB_OUTPUT
-          echo "version=${new_version}" >> $GITHUB_OUTPUT
-          echo "tag=${new_version}" >> $GITHUB_OUTPUT
+          currentBranch=$(git rev-parse --abbrev-ref HEAD)
+          new_version=v0.0.0
+
+          setOutput organization ${var1,,}
+          setOutput project ${var2,,}
+          setOutput version ${new_version}
+          setOutput tag ${new_version}
+          setOutput currentBranch ${currentBranch}
