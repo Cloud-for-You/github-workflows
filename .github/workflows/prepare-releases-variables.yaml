@@ -3,7 +3,7 @@ on:
   workflow_call:
 
 jobs:
-  setup:
+  variables:
     runs-on: ubuntu-latest
     outputs:
       organization: ${{ steps.repository.outputs.organization }}
