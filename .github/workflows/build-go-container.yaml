@@ -9,7 +9,7 @@ on:
 
 jobs:
   setup:
-    uses: Cloud-for-You/github-workflows/.github/workflows/prepare-releases-variable.yaml@main
+    uses: Cloud-for-You/github-workflows/.github/workflows/prepare-releases-variables.yaml@main
   build:
     runs-on: ubuntu-latest
     needs:
