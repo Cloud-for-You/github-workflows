@@ -48,6 +48,5 @@ jobs:
 
           setOutput organization ${var1,,}
           setOutput project ${var2,,}
-          setOutput version ${new_version}
+          setOutput version ${currentBranch}
           setOutput tag ${new_version}
-          setOutput currentBranch ${currentBranch}

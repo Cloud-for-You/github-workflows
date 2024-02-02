@@ -22,7 +22,6 @@ jobs:
           echo "Project: ${{ needs.setup.outputs.project }}"
           echo "Version: ${{ needs.setup.outputs.version }}"
           echo "Tag: ${{ needs.setup.outputs.tag }}"
-          echo "Upload URL: ${{ needs.setup.outputs.upload_url }}"
 
   build:
     runs-on: ubuntu-latest
