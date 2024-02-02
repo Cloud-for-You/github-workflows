@@ -33,6 +33,10 @@ jobs:
         id: get_actual_tag
         run: |
           echo "tag=$(git describe --tags --abbrev=0 || echo "v0.0.0")" >> $GITHUB_OUTPUT
+      - name: Install prerequisite
+        run: |
+          apt update
+          apt -y install node-semver
       - name: Set variables
         id: variables
         run: |
