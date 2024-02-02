@@ -10,6 +10,16 @@ on:
 jobs:
   setup:
     uses: Cloud-for-You/github-workflows/.github/workflows/prepare-releases-variables.yaml@main
+  debug:
+    runs-on: ubuntu-latest 
+    needs:
+      - setup
+    steps:
+      - name: DEBUG setup output
+        shell: bash
+        run: |
+          echo ${{ needs.setup.outputs.version }}
+
   build:
     runs-on: ubuntu-latest
     needs:
