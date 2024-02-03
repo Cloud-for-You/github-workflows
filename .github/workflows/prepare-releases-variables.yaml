@@ -48,13 +48,21 @@ jobs:
           setOutput organization ${var1,,}
           setOutput project ${var2,,}
       - name: Set version data for release
+        # Vzor: https://github.com/anothrNick/github-tag-action/blob/master/entrypoint.sh
         id: version
         run: |
+          # SET VARIABLES FOR SCRIPT
+          releaseBranches=${{ inputs.releaseBranch}}
+
+          # SET FUNCTION FOR SCRIPT
           setOutput() {
             echo "${1}=${2}" >> "$GITHUB_OUTPUT"
           }
+
+          # Get current git branch
           currentBranch=$(git rev-parse --abbrev-ref HEAD)
-          releaseBranches=${{ inputs.releaseBranch}}
+          
+          # Decide whether it is a release or a prerelease
           IFS=',' read -ra branch <<< "$releaseBranches"
           for b in "${branch[@]}"; do
             # check if ${currentBranch} is in ${releaseBranches} | exact branch match
@@ -66,7 +74,9 @@ jobs:
               preRelease="false"
             fi
           done
-          echo "preRelease = $preRelease"
+
+          #fetch all tags
+          git fetch --tags
 
 
 
