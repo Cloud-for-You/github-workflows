@@ -75,7 +75,7 @@ jobs:
             fi
           done
 
-          #fetch all tags
+          # Fetch all tags
           git fetch --tags
 
 
