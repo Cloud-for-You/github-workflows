@@ -56,7 +56,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=local,dest=/tmp/${{ needs.setup.outputs.project }}-cache,mode=max
       - name: Upload cache
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.cache-name.outputs.cache-name }}
           path: /tmp/${{ needs.setup.outputs.project }}-cache
