@@ -36,6 +36,7 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
       - name: Prepare release version variables
+        id: release-please
         uses: google-github-actions/release-please-action@v4
         with:
           release-type: simple
