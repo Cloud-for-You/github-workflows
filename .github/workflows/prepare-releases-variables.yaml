@@ -13,12 +13,9 @@ on:
       project:
         description: "Project name (eg. container name)"
         value: ${{ jobs.variables.outputs.project }}
-      version:
+      release:
         description: "Application release version"
-        value: ${{ jobs.variables.outputs.version }}
-      tag:
-        description: "Application release tag (eg. Tag for docker container)"
-        value: ${{ jobs.variables.outputs.tag }}
+        value: ${{ jobs.variables.outputs.release }}
 
 jobs:
   variables:
