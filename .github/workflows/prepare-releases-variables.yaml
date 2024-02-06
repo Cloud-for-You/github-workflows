@@ -27,10 +27,6 @@ jobs:
       project: ${{ steps.repository.outputs.project }}
       release: ${{ steps.release.outputs.major }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
       - name: Prepare repository variables
         id: repository
         run: |
@@ -52,4 +48,4 @@ jobs:
 
       - name: DEBUG release please outputs
         run: |
-          echo "Minor version: ${{ steps.release.outputs.sha}}"
+          echo "Minor version: ${{ steps.release.outputs.sha }}"
