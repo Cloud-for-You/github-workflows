@@ -35,7 +35,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
-      - name: Get repository variables
+      - name: Prepare release version variables
+        uses: google-github-actions/release-please-action@v4
+        with:
+          release-type: simple
+          target-branch: ${{ github.ref_name }}
+      - name: Prepare repository variables
         id: repository
         run: |
           setOutput() {
@@ -47,39 +52,3 @@ jobs:
 
           setOutput organization ${var1,,}
           setOutput project ${var2,,}
-      - name: Set version data for release
-        # Vzor: https://github.com/anothrNick/github-tag-action/blob/master/entrypoint.sh
-        id: version
-        run: |
-          # SET VARIABLES FOR SCRIPT
-          releaseBranches=${{ inputs.releaseBranch}}
-
-          # SET FUNCTION FOR SCRIPT
-          setOutput() {
-            echo "${1}=${2}" >> "$GITHUB_OUTPUT"
-          }
-
-          # Get current git branch
-          currentBranch=$(git rev-parse --abbrev-ref HEAD)
-          
-          # Decide whether it is a release or a prerelease
-          IFS=',' read -ra branch <<< "$releaseBranches"
-          for b in "${branch[@]}"; do
-            # check if ${currentBranch} is in ${releaseBranches} | exact branch match
-            if [[ "$currentBranch" == "$b" ]]; then
-              preRelease="false"
-            fi
-            # verify non specific branch names like  .* release/* if wildcard filter then =~
-            if [ "$b" != "${b//[\[\]|.? +*]/}" ] && [[ "$currentBranch" =~ $b ]]; then
-              preRelease="false"
-            fi
-          done
-
-          # Fetch all tags
-          git fetch --tags
-
-
-
-          
-          setOutput new_version $releaseBranches
-          setOutput new_tag novy_tag
