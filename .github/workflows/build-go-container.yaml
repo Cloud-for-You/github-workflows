@@ -20,7 +20,7 @@ jobs:
         run: |
           echo "Organization: ${{ needs.setup.outputs.organization }}"
           echo "Project: ${{ needs.setup.outputs.project }}"
-          echo "Version: ${{ needs.setup.outputs.version }}"
+          echo "Release: ${{ needs.setup.outputs.release }}"
 
   build:
     runs-on: ubuntu-latest
