@@ -28,19 +28,12 @@ jobs:
     outputs:
       organization: ${{ steps.repository.outputs.organization }}
       project: ${{ steps.repository.outputs.project }}
-      version: ${{ steps.version.outputs.new_version }}
-      tag: ${{ steps.version.outputs.new_tag }}
+      release: ${{ steps.release.outputs }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
-      - name: Prepare release version variables
-        id: release-please
-        uses: google-github-actions/release-please-action@v4
-        with:
-          release-type: simple
-          target-branch: ${{ github.ref_name }}
       - name: Prepare repository variables
         id: repository
         run: |
@@ -53,3 +46,9 @@ jobs:
 
           setOutput organization ${var1,,}
           setOutput project ${var2,,}
+      - name: Prepare release version variables
+        id: release
+        uses: google-github-actions/release-please-action@v4
+        with:
+          release-type: simple
+          target-branch: ${{ github.ref_name }}
