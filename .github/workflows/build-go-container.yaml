@@ -21,7 +21,6 @@ jobs:
           echo "Organization: ${{ needs.setup.outputs.organization }}"
           echo "Project: ${{ needs.setup.outputs.project }}"
           echo "Version: ${{ needs.setup.outputs.version }}"
-          echo "Tag: ${{ needs.setup.outputs.tag }}"
 
   build:
     runs-on: ubuntu-latest
