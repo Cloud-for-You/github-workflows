@@ -49,3 +49,7 @@ jobs:
         with:
           release-type: simple
           target-branch: ${{ github.ref_name }}
+
+      - name: DEBUG release please outputs
+        run: |
+          echo "Minor version: ${{ steps.release.outputs.sha}}"
