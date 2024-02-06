@@ -25,7 +25,7 @@ jobs:
     outputs:
       organization: ${{ steps.repository.outputs.organization }}
       project: ${{ steps.repository.outputs.project }}
-      release: ${{ steps.release.outputs }}
+      release: ${{ steps.release.outputs.major }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
