@@ -17,10 +17,6 @@ on:
         description: "Application release version"
         value: ${{ jobs.variables.outputs.release }}
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   variables:
     runs-on: ubuntu-latest
