@@ -25,13 +25,14 @@ jobs:
         run: |
           echo "Organization: ${{ needs.release.outputs.organization }}"
           echo "Project: ${{ needs.release.outputs.project }}"
-          echo "Release: ${{ needs.release.outputs.release_sha }}"
+          echo "Release_created: ${{ needs.release.outputs.release_created }}"
+          echo "Release_SHA: ${{ needs.release.outputs.release_sha }}"
 
   build:
     runs-on: ubuntu-latest
     needs:
       - release
-    if: ${{ needs.release.outputs.release_sha == 'true' }}
+    if: ${{ needs.release.outputs.release_created == 'true' }}
     steps:
       - name: Test step
         run: |
