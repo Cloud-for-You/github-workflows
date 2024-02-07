@@ -7,9 +7,13 @@ on:
       QUAY_TOKEN:
         required: false
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   releases:
-    uses: Cloud-for-You/github-workflows/.github/workflows/releases.yaml@main
+    uses: Cloud-for-You/github-workflows/.github/workflows/release-please.yaml@main
 
   debug:
     runs-on: ubuntu-latest 

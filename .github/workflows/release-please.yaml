@@ -24,7 +24,7 @@ jobs:
     outputs:
       organization: ${{ steps.repository.outputs.organization }}
       project: ${{ steps.repository.outputs.project }}
-      release: ${{ steps.release.outputs.major }}
+      release: ${{ steps.release-please.outputs.sha }}
 
     steps:
       - name: Repository variables
@@ -41,7 +41,7 @@ jobs:
           setOutput project ${var2,,}
 
       - name: Release version variables
-        id: release
+        id: release-please
         uses: google-github-actions/release-please-action@v4
         with:
           release-type: simple
