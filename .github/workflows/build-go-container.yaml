@@ -32,7 +32,9 @@ jobs:
     needs:
       - release
     if: ${{ needs.release.outputs.release_sha == 'true' }}
-    run: |
-      echo "Provedeme build aplikace"
+    steps:
+      - name: Test step
+        run: |
+          echo "Provedeme build aplikace"
 
 
