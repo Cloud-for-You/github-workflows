@@ -1,4 +1,4 @@
-name: Prepare release variables
+name: Releases
 on:
   workflow_call:
     inputs:
@@ -30,6 +30,7 @@ jobs:
       organization: ${{ steps.repository.outputs.organization }}
       project: ${{ steps.repository.outputs.project }}
       release: ${{ steps.release.outputs.major }}
+
     steps:
       - name: Prepare repository variables
         id: repository
@@ -43,12 +44,9 @@ jobs:
 
           setOutput organization ${var1,,}
           setOutput project ${var2,,}
+
       - name: Prepare release version variables
         id: release
         uses: google-github-actions/release-please-action@v4
         with:
           release-type: simple
-
-      - name: DEBUG release please outputs
-        run: |
-          echo "Minor version: ${{ steps.release.outputs.sha }}"
