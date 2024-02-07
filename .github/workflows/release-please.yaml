@@ -8,9 +8,12 @@ on:
       project:
         description: "Project name (eg. container name)"
         value: ${{ jobs.releases.outputs.project }}
-      release:
+      release_created:
+        description: "Is created release"
+        value: ${{ jobs.releases.outputs.release_created }}
+      release_sha:
         description: "Application release version"
-        value: ${{ jobs.releases.outputs.release }}
+        value: ${{ jobs.releases.outputs.release_sha }}
 
 permissions:
   contents: write
@@ -24,7 +27,8 @@ jobs:
     outputs:
       organization: ${{ steps.repository.outputs.organization }}
       project: ${{ steps.repository.outputs.project }}
-      release: ${{ steps.release-please.outputs.sha }}
+      release_created: ${{ steps.release-please.outputs.releases_created }}
+      release_sha: ${{ steps.release-please.outputs.sha }}
 
     steps:
       - name: Repository variables
