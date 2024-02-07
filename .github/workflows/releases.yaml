@@ -4,20 +4,20 @@ on:
     outputs:
       organization:
         description: "Organization (eg. folder in docker registry)"
-        value: ${{ jobs.variables.outputs.organization }}
+        value: ${{ jobs.releases.outputs.organization }}
       project:
         description: "Project name (eg. container name)"
-        value: ${{ jobs.variables.outputs.project }}
+        value: ${{ jobs.releases.outputs.project }}
       release:
         description: "Application release version"
-        value: ${{ jobs.variables.outputs.release }}
+        value: ${{ jobs.releases.outputs.release }}
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  variables:
+  releases:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -27,7 +27,7 @@ jobs:
       release: ${{ steps.release.outputs.major }}
 
     steps:
-      - name: Prepare repository variables
+      - name: Repository variables
         id: repository
         run: |
           setOutput() {
@@ -40,7 +40,7 @@ jobs:
           setOutput organization ${var1,,}
           setOutput project ${var2,,}
 
-      - name: Prepare release version variables
+      - name: Release version variables
         id: release
         uses: google-github-actions/release-please-action@v4
         with:
