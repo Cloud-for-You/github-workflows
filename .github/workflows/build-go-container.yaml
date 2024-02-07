@@ -8,17 +8,17 @@ on:
         required: false
 
 jobs:
-  setup:
+  releases:
     uses: Cloud-for-You/github-workflows/.github/workflows/releases.yaml@main
 
   debug:
     runs-on: ubuntu-latest 
     needs:
-      - setup
+      - releases
     steps:
       - name: DEBUG setup output
         shell: bash
         run: |
-          echo "Organization: ${{ needs.setup.outputs.organization }}"
-          echo "Project: ${{ needs.setup.outputs.project }}"
-          echo "Release: ${{ needs.setup.outputs.release }}"
+          echo "Organization: ${{ needs.releases.outputs.organization }}"
+          echo "Project: ${{ needs.releases.outputs.project }}"
+          echo "Release: ${{ needs.releases.outputs.release }}"
