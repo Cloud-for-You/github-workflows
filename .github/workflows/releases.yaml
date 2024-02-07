@@ -1,11 +1,6 @@
 name: Releases
 on:
   workflow_call:
-    inputs:
-      releaseBranch:
-        required: false
-        type: string
-        default: master,main
     outputs:
       organization:
         description: "Organization (eg. folder in docker registry)"
