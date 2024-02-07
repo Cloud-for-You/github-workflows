@@ -17,6 +17,10 @@ on:
         description: "Application release version"
         value: ${{ jobs.variables.outputs.release }}
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   variables:
     runs-on: ubuntu-latest
@@ -44,7 +48,6 @@ jobs:
         uses: google-github-actions/release-please-action@v4
         with:
           release-type: simple
-          target-branch: ${{ github.ref_name }}
 
       - name: DEBUG release please outputs
         run: |
