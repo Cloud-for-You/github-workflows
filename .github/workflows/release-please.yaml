@@ -4,23 +4,23 @@ on:
     outputs:
       organization:
         description: "Organization (eg. folder in docker registry)"
-        value: ${{ jobs.releases.outputs.organization }}
+        value: ${{ jobs.release-please.outputs.organization }}
       project:
         description: "Project name (eg. container name)"
-        value: ${{ jobs.releases.outputs.project }}
+        value: ${{ jobs.release-please.outputs.project }}
       release_created:
         description: "Is created release"
-        value: ${{ jobs.releases.outputs.release_created }}
+        value: ${{ jobs.release-please.outputs.release_created }}
       release_sha:
         description: "Application release version"
-        value: ${{ jobs.releases.outputs.release_sha }}
+        value: ${{ jobs.release-please.outputs.release_sha }}
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  releases:
+  release-please:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
