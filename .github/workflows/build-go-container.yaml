@@ -108,6 +108,8 @@ jobs:
        - build
        - push
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Delete merged branch
         run: |
           git fetch --prune --unshallow
