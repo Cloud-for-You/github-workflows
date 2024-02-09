@@ -35,9 +35,83 @@ jobs:
     needs:
       - release
     if: ${{ needs.release.outputs.release_created == 'true' }}
+    strategy:
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
+          - darwin/amd64
+          - darwin/arm64
     steps:
-      - name: Test step
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Set cache name
+        id: cache-name
         run: |
-          echo "Provedeme build aplikace"
+          echo "cache-name=${{ needs.release.outputs.project }}-cache-${{ matrix.platform }}" | sed 's:/:-:g' >> $GITHUB_OUTPUT
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: ${{ matrix.platform }}
+          tags: ${{ needs.release.outputs.project }}:${{ github.ref_name }}
+          cache-from: type=gha
+          cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache,mode=max
+      - name: Upload cache
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.cache-name.outputs.cache-name }}
+          path: /tmp/${{ needs.release.outputs.project }}-cache
+          if-no-files-found: error
+          retention-days: 1
 
-
+  push:
+    runs-on: ubuntu-latest
+    needs:
+      - release
+      - build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Download cache
+        uses: actions/download-artifact@v3
+        with:
+          path: /tmp/${{ needs.release.outputs.project }}-cache
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            quay.io/${{ needs.release.outputs.organization }}/${{ needs.release.outputs.project }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ needs.release.outputs.release_tag_name }}
+      - name: Login to QUAY.IO
+        uses: docker/login-action@v2
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: |
+            linux/amd64
+            linux/arm64
+            darwin/amd64
+            darwin/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=gha,mode=max
