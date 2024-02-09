@@ -110,7 +110,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Get merged branch name
+        id: get_merged_branch_name
+        run: |
+          echo "merged_branch=$(git for-each-ref --format '%(refname:short)' refs/remotes/origin/ --merged HEAD)" >> "$GITHUB_OUTPUT"
       - name: Delete merged branch
         run: |
           git fetch --prune --unshallow
-          git push origin --delete ${{ github.head_ref }}
+          git push origin --delete ${{ steps.get_merged_branch_name.outputs.merged_branch }}
