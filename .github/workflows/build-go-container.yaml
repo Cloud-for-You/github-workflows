@@ -28,7 +28,7 @@ jobs:
           echo "Organization: ${{ needs.release.outputs.organization }}"
           echo "Project: ${{ needs.release.outputs.project }}"
           echo "Release_created: ${{ needs.release.outputs.release_created }}"
-          echo "Release_SHA: ${{ needs.release.outputs.release_sha }}"
+          echo "Release_tag_name: ${{ needs.release.outputs.release_tag_name }}"
 
   build:
     runs-on: ubuntu-latest
