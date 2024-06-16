@@ -17,6 +17,8 @@ jobs:
 
   auto-pass-rp:
     runs-on: ubuntu-latest
+    needs:
+      - release
     steps:
       - name: Set PR  check to success
         run: |
