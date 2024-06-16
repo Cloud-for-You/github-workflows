@@ -16,7 +16,6 @@ jobs:
     uses: Cloud-for-You/github-workflows/.github/workflows/release-please.yaml@main
 
   auto-pass-rp:
-    if: github.actor == 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Set PR  check to success
