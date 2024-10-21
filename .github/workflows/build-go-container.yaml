@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   test:
+    name: TEST
     runs-on: ubuntu-latest
     steps:
       - name: debug
@@ -26,9 +27,8 @@ jobs:
     uses: Cloud-for-You/github-workflows/.github/workflows/release-please.yaml@main
     
   build-dev:
+    name: Build DEV version
     runs-on: ubuntu-latest
-    needs:
-      - release
     if: ${{ github.ref_name != github.event.repository.default_branch && github.event_name == 'workflow_dispatch' }}
     strategy:
       matrix:
@@ -42,6 +42,7 @@ jobs:
         run: echo "Branch ${{ github.ref_name}}"
   
   build-release:
+    name: Build RELEASE version
     runs-on: ubuntu-latest
     needs:
       - release
