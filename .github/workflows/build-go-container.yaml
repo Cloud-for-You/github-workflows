@@ -1,6 +1,11 @@
 name: Build GO container
 on:
   workflow_call:
+    inputs:
+      ref_name:
+        required: false
+        type: string
+        default: ${{ github.event.repository.default_branch }}
     secrets:
       QUAY_USERNAME:
         required: false
@@ -28,7 +33,7 @@ jobs:
           - darwin/arm64
     steps:
       - name: TEST
-        run: echo "Branch: ${{ github.ref_name }}"
+        run: echo "Branch ${{ github.ref_name }}"
   
   build-release:
     runs-on: ubuntu-latest
