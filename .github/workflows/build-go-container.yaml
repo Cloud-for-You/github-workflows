@@ -1,11 +1,6 @@
 name: Build GO container
 on:
   workflow_call:
-    inputs:
-      ref_name:
-        required: false
-        type: string
-        default: ${{ github.event.repository.default_branch }}
     secrets:
       QUAY_USERNAME:
         required: false
@@ -18,12 +13,14 @@ permissions:
 
 jobs:
   release:
-    if: ${{ inputs.ref_name == github.event.repository.default_branch }}
+    if: ${{ github.ref_name == github.event.repository.default_branch }}
     uses: Cloud-for-You/github-workflows/.github/workflows/release-please.yaml@main
     
   build-dev:
     runs-on: ubuntu-latest
-    if: ${{ inputs.ref_name != github.event.repository.default_branch && github.event_name == 'workflow_dispatch' }}
+    needs
+      - release
+    if: ${{ github.ref_name != github.event.repository.default_branch && github.event_name == 'workflow_dispatch' }}
     strategy:
       matrix:
         platform:
@@ -33,7 +30,7 @@ jobs:
           - darwin/arm64
     steps:
       - name: TEST
-        run: echo "Branch ${{ inputs.ref_name }}"
+        run: echo "Branch ${{ github.ref_name}}"
   
   build-release:
     runs-on: ubuntu-latest
@@ -65,7 +62,7 @@ jobs:
         with:
           context: .
           platforms: ${{ matrix.platform }}
-          tags: ${{ needs.release.outputs.project }}:${{ inputs.ref_name }}
+          tags: ${{ needs.release.outputs.project }}:${{ github.ref_name }}
           cache-from: type=gha
           cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache,mode=max
       - name: Upload cache
