@@ -108,7 +108,7 @@ jobs:
       - release
       - build-release
       - build-dev
-    if: ${{ always() && contains(join(needs.build-*.result, ','), 'success') }}
+    if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
     steps:
       #- name: Checkout
       #  uses: actions/checkout@v4
