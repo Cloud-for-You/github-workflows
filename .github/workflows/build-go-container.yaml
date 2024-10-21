@@ -42,6 +42,33 @@ jobs:
     steps:
       - name: TEST
         run: echo "Branch ${{ github.ref_name}}"
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Set cache name
+        id: cache-name
+        run: |
+          echo "cache-name=${{ needs.release.outputs.project }}-cache-${{ matrix.platform }}" | sed 's:/:-:g' >> $GITHUB_OUTPUT
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: ${{ matrix.platform }}
+          tags: ${{ needs.release.outputs.project }}:${{ github.ref_name }}
+          cache-from: type=gha
+          cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache,mode=max
+      - name: Upload cache
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.cache-name.outputs.cache-name }}
+          path: /tmp/${{ needs.release.outputs.project }}-cache
+          if-no-files-found: error
+          retention-days: 1
   
   build-release:
     name: Build RELEASE version
@@ -90,6 +117,8 @@ jobs:
     needs:
       - release
       - build-release
+      - build-dev
+    if: ${{ needs.build-release.result == 'success' || needs.build-dev.result == 'success' }}
     steps:
       #- name: Checkout
       #  uses: actions/checkout@v4
