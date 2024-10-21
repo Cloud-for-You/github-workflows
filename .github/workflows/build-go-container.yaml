@@ -124,7 +124,7 @@ jobs:
           path: /tmp/${{ needs.release.outputs.project }}-cache
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: |
             quay.io/${{ needs.release.outputs.organization }}/${{ needs.release.outputs.project }}
