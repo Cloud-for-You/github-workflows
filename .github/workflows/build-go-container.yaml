@@ -23,6 +23,7 @@ jobs:
           echo "EVENT_NAME ${{ github.event_name }}"
     
   release:
+    name: Release
     if: ${{ github.ref_name == github.event.repository.default_branch }}
     uses: Cloud-for-You/github-workflows/.github/workflows/release-please.yaml@main
     
