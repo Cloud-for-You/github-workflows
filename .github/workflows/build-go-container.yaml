@@ -110,8 +110,10 @@ jobs:
       - build-dev
     if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
     steps:
-      #- name: Checkout
-      #  uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
