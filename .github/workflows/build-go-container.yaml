@@ -50,9 +50,9 @@ jobs:
           tags: ${{ needs.release.outputs.project }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache,mode=max
-          labels: |
-            quay.expires-after=7d
-            maintainer=${{ github.actor }}
+          build-args: |
+            --label quay.expires-after=7d
+            --label maintainer=${{ github.actor }}
       - name: Upload cache
         uses: actions/upload-artifact@v4
         with:
@@ -150,6 +150,6 @@ jobs:
             darwin/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }},quay.expires-after=7d
+          labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=gha,mode=max
