@@ -11,76 +11,11 @@ permissions:
   contents: write
   pull-requests: write
 
-jobs:  
+jobs:
   release:
-    name: Release
     uses: Cloud-for-You/github-workflows/.github/workflows/release-please.yaml@main
-<<<<<<< HEAD
-    
-  build-dev:
-    name: Build DEV version
-    runs-on: ubuntu-latest
-    needs:
-      - release
-    if: ${{ github.ref_name != github.event.repository.default_branch && github.event_name == 'workflow_dispatch' }}
-    strategy:
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
-          - darwin/amd64
-          - darwin/arm64
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Set cache name
-        id: cache-name
-        run: |
-          echo "cache-name=${{ needs.release.outputs.project }}-cache-${{ matrix.platform }}" | sed 's:/:-:g' >> $GITHUB_OUTPUT
-      - name: Build image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          platforms: ${{ matrix.platform }}
-          tags: ${{ needs.release.outputs.project }}:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache,mode=max
-          labels: |
-            quay.expires-after=7d
-            maintainer=${{ github.actor }}
-      - name: Upload cache
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.cache-name.outputs.cache-name }}
-          path: /tmp/${{ needs.release.outputs.project }}-cache
-          if-no-files-found: error
-          retention-days: 1
-  
-  build-release:
-    name: Build RELEASE version
-=======
-
-  auto-pass-rp:
-    runs-on: ubuntu-latest
-    needs:
-      - release
-    steps:
-      - name: Set PR  check to success
-        run: |
-          PR_SHA=${{ needs.release.outputs.sha }}
-          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               -X POST \
-               -d '{"state":"success", "context":"linting"}' \
-               https://api.github.com/repos/${{ github.repository }}/statuses/$PR_SHA
 
   build:
->>>>>>> parent of fd44ff2 (Update build-go-container.yaml)
     runs-on: ubuntu-latest
     needs:
       - release
@@ -105,8 +40,8 @@ jobs:
         id: cache-name
         run: |
           echo "cache-name=${{ needs.release.outputs.project }}-cache-${{ matrix.platform }}" | sed 's:/:-:g' >> $GITHUB_OUTPUT
-      - name: Build image
-        uses: docker/build-push-action@v6
+      - name: Build and push
+        uses: docker/build-push-action@v5
         with:
           context: .
           platforms: ${{ matrix.platform }}
@@ -125,14 +60,10 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - release
-      - build-release
-      - build-dev
-    if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
+      - build
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -143,16 +74,14 @@ jobs:
           path: /tmp/${{ needs.release.outputs.project }}-cache
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v4
         with:
           images: |
             quay.io/${{ needs.release.outputs.organization }}/${{ needs.release.outputs.project }}
-          #tags: |
-          #  type=semver,pattern={{version}},value=${{ needs.release.outputs.release_tag_name }}
           tags: |
-            ${{ github.ref_name == github.event.repository.default_branch && format('type=semver,pattern={{version}},value={0}',needs.release.outputs.release_tag_name) || format('type=sha,prefix=dev-,value={0}', github.sha) }}
+            type=semver,pattern={{version}},value=${{ needs.release.outputs.release_tag_name }}
       - name: Login to QUAY.IO
-        uses: docker/login-action@v3
+        uses: docker/login-action@v2
         with:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
@@ -171,3 +100,21 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=gha,mode=max
+
+  #cleanup-branch:
+  #  runs-on: ubuntu-latest
+  # needs:
+  #     - release
+  #     - build
+  #     - push
+  #  steps:
+  #    - name: Checkout
+  #      uses: actions/checkout@v4
+  #    - name: Get merged branch name
+  #      id: get_merged_branch_name
+  #      run: |
+  #        echo "merged_branch=$(git for-each-ref --format '%(refname:short)' refs/remotes/origin/ --merged HEAD)" >> "$GITHUB_OUTPUT"
+  #    - name: Delete merged branch
+  #      run: |
+  #        git fetch --prune --unshallow
+  #        git push origin --delete ${{ steps.get_merged_branch_name.outputs.merged_branch }}
