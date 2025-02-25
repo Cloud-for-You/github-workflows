@@ -40,9 +40,6 @@ jobs:
         id: cache-name
         run: |
           echo "cache-name=${{ needs.release.outputs.project }}-cache-${{ matrix.platform }}" | sed 's:/:-:g' >> $GITHUB_OUTPUT
-      - name: Set expire date in dockerfile
-        run: |
-          echo "LABEL quay.expires-after=\"2d\"" >> Dockerfile
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
