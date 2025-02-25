@@ -58,7 +58,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
       - name: Set docker image tag
-        run: echo "OUTPUT_TAG=dev-${{ github.sha }}" >> $GITHUB_ENV
+        run: echo "output_tag=dev-${{ github.sha }}" >> $GITHUB_OUTPUT
     
   build-release:
     runs-on: ubuntu-latest
@@ -103,7 +103,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
       - name: Set docker image tag
-        run: echo "OUTPUT_TAG=${{ needs.release.outputs.release_tag_name }}" >> $GITHUB_ENV
+        run: echo "output_tag=${{ needs.release.outputs.release_tag_name }}" >> $GITHUB_OUTPUT
 
   push:
     runs-on: ubuntu-latest
