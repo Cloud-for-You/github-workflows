@@ -47,7 +47,7 @@ jobs:
         with:
           context: .
           platforms: ${{ matrix.platform }}
-          tags: ${{ needs.release.outputs.project }}:${{ github.ref_name }}
+          tags: ${{ needs.release.outputs.project }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache,mode=max
       - name: Upload cache
@@ -92,7 +92,7 @@ jobs:
         with:
           context: .
           platforms: ${{ matrix.platform }}
-          tags: ${{ needs.release.outputs.project }}:${{ github.ref_name }}
+          tags: ${{ needs.release.outputs.project }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache,mode=max
       - name: Upload cache
