@@ -151,27 +151,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=gha,mode=max
-      - name: Set tag expiration on Quay.io
-        if: ${{ needs.build-dev-docker-image.result == 'success' }}
-        run: |
-          IMAGE="${{ steps.meta.outputs.tags }}"
-          EXPIRATION="2d"
-          USERNAME="${{ secrets.QUAY_USERNAME }}"
-          PASSWORD="${{ secrets.QUAY_TOKEN }}"
-
-          # Extrahování tagu z IMAGE (část za poslední dvojtečkou)
-          TAG=$(echo "${IMAGE}" | awk -F: '{print $2}')
-      
-          # Vytvoření základní autentizace v base64
-          AUTH=$(echo -n "${USERNAME}:${PASSWORD}" | base64)
-      
-          curl -X PATCH \
-            -H "Authorization: Basic ${AUTH}" \
-            -H "Content-Type: application/json" \
-            -d '{
-                  "expiration": "'"${EXPIRATION}"'"
-                }' \
-            "https://quay.io/api/v1/repository/${IMAGE}/tag/${TAG}/"
 
   #cleanup-branch:
   #  runs-on: ubuntu-latest
