@@ -154,11 +154,13 @@ jobs:
       - name: Set tag expiration on Quay.io
         if: ${{ needs.build-dev-docker-image.result == 'success' }}
         run: |
-          TAG="${{ steps.meta.outputs.tags }}"
-          IMAGE="quay.io/${{ needs.release.outputs.organization }}/${{ needs.release.outputs.project }}"
+          IMAGE="${{ steps.meta.outputs.tags }}"
           EXPIRATION="2d"
           USERNAME="${{ secrets.QUAY_USERNAME }}"
           PASSWORD="${{ secrets.QUAY_TOKEN }}"
+
+          # Extrahování tagu z IMAGE (část za poslední dvojtečkou)
+          TAG=$(echo "${IMAGE}" | awk -F: '{print $2}')
       
           # Vytvoření základní autentizace v base64
           AUTH=$(echo -n "${USERNAME}:${PASSWORD}" | base64)
