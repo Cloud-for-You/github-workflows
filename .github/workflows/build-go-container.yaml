@@ -111,10 +111,7 @@ jobs:
       - release
       - build-release
       - build-development
-    if: >-
-      (needs.release.result == 'success') && 
-      (needs.build-release.result == 'success' || needs.build-release.result == 'skipped') ||
-      (needs.build-development.result == 'success' || needs.build-development.result == 'skipped')
+    if: ${{ always() && !failure() && !cancelled() }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
