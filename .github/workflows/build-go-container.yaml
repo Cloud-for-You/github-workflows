@@ -112,7 +112,9 @@ jobs:
       - build-release
       - build-development
     if: >-
-      (needs.build-release.result == 'success' || needs.build-development.result == 'success')
+      (needs.release.result == 'success') && 
+      (needs.build-release.result == 'success' || needs.build-release.result == 'skipped') ||
+      (needs.build-development.result == 'success' || needs.build-development.result == 'skipped')
     steps:
       - name: Checkout
         uses: actions/checkout@v4
