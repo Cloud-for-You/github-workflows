@@ -112,7 +112,6 @@ jobs:
       - build-release
       - build-development
     if: >-
-      success() &&
       (needs.build-release.result == 'success' || needs.build-development.result == 'success')
     steps:
       - name: Checkout
