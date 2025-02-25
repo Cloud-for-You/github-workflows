@@ -57,8 +57,6 @@ jobs:
           path: /tmp/${{ needs.release.outputs.project }}-cache
           if-no-files-found: error
           retention-days: 1
-      - name: Set docker image tag
-        run: echo "output_tag=dev-${{ github.sha }}" >> $GITHUB_OUTPUT
     
   build-release:
     runs-on: ubuntu-latest
@@ -102,8 +100,6 @@ jobs:
           path: /tmp/${{ needs.release.outputs.project }}-cache
           if-no-files-found: error
           retention-days: 1
-      - name: Set docker image tag
-        run: echo "output_tag=${{ needs.release.outputs.release_tag_name }}" >> $GITHUB_OUTPUT
 
   push:
     runs-on: ubuntu-latest
@@ -123,14 +119,22 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: /tmp/${{ needs.release.outputs.project }}-cache
+      - name: Set docker tag
+        id: set_tag
+        run: |
+          if [[ "${{ needs.build-release.result }}" == "success" ]]; then
+            echo "tag=type=semver,pattern={{version}},value=${{ needs.release.outputs.release_tag_name }}" >> $GITHUB_ENV
+          else
+            echo "tag=type=sha,enable=true,priority=100,prefix=sha-,suffix=,format=short" >> $GITHUB_ENV
+          fi
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: |
             quay.io/${{ needs.release.outputs.organization }}/${{ needs.release.outputs.project }}
           tags: |
-            type=semver,pattern={{version}},value=${{ needs.build-release.outputs.output_tag || needs.build-development.outputs.output_tag }}
+            ${{ steps.set_tag.outputs.tag }}
       - name: Login to QUAY.IO
         uses: docker/login-action@v2
         with:
