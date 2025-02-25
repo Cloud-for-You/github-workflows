@@ -15,7 +15,7 @@ jobs:
   release:
     uses: Cloud-for-You/github-workflows/.github/workflows/release-please.yaml@main
 
-  build-development:
+  build-dev-docker-image:
     runs-on: ubuntu-latest
     needs:
       - release
@@ -40,13 +40,15 @@ jobs:
         id: cache-name
         run: |
           echo "cache-name=${{ needs.release.outputs.project }}-cache-${{ matrix.platform }}" | sed 's:/:-:g' >> $GITHUB_OUTPUT
+      - name: Set expire date in dockerfile
+        run: |
+          echo "LABEL quay.expires-after=\"2d\"" >> Dockerfile
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           platforms: ${{ matrix.platform }}
           tags: ${{ needs.release.outputs.project }}:${{ github.sha }}
-          labels: quay.expires-after=2d
           cache-from: type=gha
           cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache,mode=max
       - name: Upload cache
@@ -57,7 +59,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
     
-  build-release:
+  build-release-docker-image:
     runs-on: ubuntu-latest
     needs:
       - release
@@ -102,8 +104,8 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - release
-      - build-release
-      - build-development
+      - build-release-docker-image
+      - build-dev-docker-image
     if: ${{ always() && !failure() && !cancelled() }}
     steps:
       - name: Checkout
@@ -119,7 +121,7 @@ jobs:
       - name: Set docker tag
         id: set_tag
         run: |
-          if [[ "${{ needs.build-release.result }}" == "success" ]]; then
+          if [[ "${{ needs.build-release-docker-image.result }}" == "success" ]]; then
             echo "TAG=type=semver,pattern={{version}},value=${{ needs.release.outputs.release_tag_name }}" >> $GITHUB_ENV
           else
             echo "TAG=type=sha,enable=true,priority=100,prefix=sha-,suffix=,format=short" >> $GITHUB_ENV
@@ -155,10 +157,12 @@ jobs:
 
   #cleanup-branch:
   #  runs-on: ubuntu-latest
-  # needs:
-  #     - release
-  #     - build-release
-  #     - push
+  #  needs:
+  #    - release
+  #    - build-release-docker-image
+  #    - build-dev-image
+  #    - push
+  #  if: ${{ always() && !failure() && !cancelled() }}
   #  steps:
   #    - name: Checkout
   #      uses: actions/checkout@v4
