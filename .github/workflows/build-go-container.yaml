@@ -39,7 +39,7 @@ jobs:
       - name: Set cache name
         id: cache-name
         run: |
-          echo "cache-name=${{ needs.release.outputs.project }}-cache-${{ matrix.platform }}" | sed 's:/:-:g' >> $GITHUB_OUTPUT
+          echo "cache-name=${{ needs.release.outputs.project }}-cache-${{ matrix.platform }}-${{ github.run_id }}" | sed 's:/:-:g' >> $GITHUB_OUTPUT
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -47,12 +47,12 @@ jobs:
           platforms: ${{ matrix.platform }}
           tags: ${{ needs.release.outputs.project }}:${{ github.sha }}
           cache-from: type=gha
-          cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache,mode=max
+          cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache-${{ github.run_id }},mode=max
       - name: Upload cache
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.cache-name.outputs.cache-name }}
-          path: /tmp/${{ needs.release.outputs.project }}-cache
+          path: /tmp/${{ needs.release.outputs.project }}-cache-${{ github.run_id }}
           if-no-files-found: error
           retention-days: 1
     
@@ -80,7 +80,7 @@ jobs:
       - name: Set cache name
         id: cache-name
         run: |
-          echo "cache-name=${{ needs.release.outputs.project }}-cache-${{ matrix.platform }}" | sed 's:/:-:g' >> $GITHUB_OUTPUT
+          echo "cache-name=${{ needs.release.outputs.project }}-cache-${{ matrix.platform }}-${{ github.run_id }}" | sed 's:/:-:g' >> $GITHUB_OUTPUT
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -88,12 +88,12 @@ jobs:
           platforms: ${{ matrix.platform }}
           tags: ${{ needs.release.outputs.project }}:${{ github.sha }}
           cache-from: type=gha
-          cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache,mode=max
+          cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache-${{ github.run_id }},mode=max
       - name: Upload cache
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.cache-name.outputs.cache-name }}
-          path: /tmp/${{ needs.release.outputs.project }}-cache
+          path: /tmp/${{ needs.release.outputs.project }}-cache-${{ github.run_id }}
           if-no-files-found: error
           retention-days: 1
 
