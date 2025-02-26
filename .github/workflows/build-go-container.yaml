@@ -103,7 +103,7 @@ jobs:
       - release
       - build-release-docker-image
       - build-dev-docker-image
-    if:  ${{ contains(fromJSON('["success"]'), needs.build-release-docker-image.result) || contains(fromJSON('["success"]'), needs.build-dev-docker-image.result) }}
+    if: ${{ always() && !failure() && !cancelled() && ((contains(fromJSON('["success"]'), needs.build-release-docker-image.result) || contains(fromJSON('["success"]'), needs.build-dev-docker-image.result))) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
