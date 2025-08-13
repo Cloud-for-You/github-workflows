@@ -20,13 +20,6 @@ jobs:
     needs:
       - release
     if: github.ref != 'refs/heads/main'
-    strategy:
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
-          - darwin/amd64
-          - darwin/arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,20 +32,19 @@ jobs:
       - name: Set cache name
         id: cache-name
         run: |
-          echo "cache-name=${{ needs.release.outputs.project }}-cache-${{ matrix.platform }}-${{ github.run_id }}" | sed 's:/:-:g' >> $GITHUB_OUTPUT
+          echo "cache-name=${{ needs.release.outputs.project }}-cache" | sed 's:/:-:g' >> $GITHUB_OUTPUT
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: ${{ matrix.platform }}
           tags: ${{ needs.release.outputs.project }}:${{ github.sha }}
           cache-from: type=gha
-          cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache-${{ github.run_id }},mode=max
+          cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache,mode=max
       - name: Upload cache
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.cache-name.outputs.cache-name }}
-          path: /tmp/${{ needs.release.outputs.project }}-cache-${{ github.run_id }}
+          path: /tmp/${{ needs.release.outputs.project }}-cache
           if-no-files-found: error
           retention-days: 1
     
@@ -61,13 +53,6 @@ jobs:
     needs:
       - release
     if: ${{ needs.release.outputs.release_created == 'true' }}
-    strategy:
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
-          - darwin/amd64
-          - darwin/arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -80,20 +65,19 @@ jobs:
       - name: Set cache name
         id: cache-name
         run: |
-          echo "cache-name=${{ needs.release.outputs.project }}-cache-${{ matrix.platform }}-${{ github.run_id }}" | sed 's:/:-:g' >> $GITHUB_OUTPUT
+          echo "cache-name=${{ needs.release.outputs.project }}-cache" | sed 's:/:-:g' >> $GITHUB_OUTPUT
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: ${{ matrix.platform }}
           tags: ${{ needs.release.outputs.project }}:${{ github.sha }}
           cache-from: type=gha
-          cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache-${{ github.run_id }},mode=max
+          cache-to: type=local,dest=/tmp/${{ needs.release.outputs.project }}-cache,mode=max
       - name: Upload cache
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.cache-name.outputs.cache-name }}
-          path: /tmp/${{ needs.release.outputs.project }}-cache-${{ github.run_id }}
+          path: /tmp/${{ needs.release.outputs.project }}-cache
           if-no-files-found: error
           retention-days: 1
 
@@ -103,7 +87,7 @@ jobs:
       - release
       - build-release-docker-image
       - build-dev-docker-image
-    if: ${{ always() && !failure() && !cancelled() && ((contains(fromJSON('["success"]'), needs.build-release-docker-image.result) || contains(fromJSON('["success"]'), needs.build-dev-docker-image.result))) }}
+    if: ${{ always() && !failure() && !cancelled() }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
