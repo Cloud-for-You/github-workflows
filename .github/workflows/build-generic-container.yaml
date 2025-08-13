@@ -10,7 +10,6 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  issues: write
 
 jobs:
   release:
@@ -88,7 +87,7 @@ jobs:
       - release
       - build-release-docker-image
       - build-dev-docker-image
-    if: ${{ always() && !failure() && !cancelled() }}
+    if: ${{ (needs.build-release-docker-image.result == 'success' || needs.build-dev-docker-image.result == 'success') && !failure() && !cancelled() }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
