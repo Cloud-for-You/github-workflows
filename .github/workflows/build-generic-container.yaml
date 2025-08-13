@@ -87,7 +87,7 @@ jobs:
       - release
       - build-release-docker-image
       - build-dev-docker-image
-    #if: ${{ always() && !failure() && !cancelled() }}
+    if: ${{ always() && !failure() && !cancelled() }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
