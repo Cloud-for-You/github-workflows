@@ -151,6 +151,8 @@ jobs:
             darwin/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: |
+            ${{ steps.meta.outputs.labels }}
+            quay.expires-after=2d
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=gha,mode=max
