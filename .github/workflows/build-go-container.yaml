@@ -116,6 +116,23 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           path: /tmp/${{ needs.release.outputs.project }}-cache
+      - name: Vulnerability scan in table
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          scan-type: image
+          image-ref: ${{ needs.release.outputs.project }}:${{ github.sha }}
+          format: "table"
+      - name: SARIF generator
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          scan-type: image
+          image-ref: ${{ needs.release.outputs.project }}:${{ github.sha }}
+          format: "sarif"
+          output: /tmp/${{ needs.setup.outputs.project-name }}-sarif
+      - name: Save vulnerability summary
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: /tmp/${{ needs.setup.outputs.project-name }}-sarif
 
   publish:
     runs-on: ubuntu-latest
