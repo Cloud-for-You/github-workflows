@@ -188,10 +188,10 @@ jobs:
 
   deploy-stage:
     runs-on: ubuntu-latest
+    environment: stage
     needs:
       - publish
       - code-quality
-    if: ${{ github.event_name == 'workflow_dispatch' && (inputs.deploy_stage == 'approve') }}
     steps:
       - name: Deploy to stage
         run: |
@@ -199,10 +199,10 @@ jobs:
 
   deploy-prod:
     runs-on: ubuntu-latest
+    environment: production
     needs:
       - publish
       - deploy-stage
-    if: ${{ github.event_name == 'workflow_dispatch' && (inputs.deploy_prod == 'approve') }}
     steps:
       - name: Deploy to prod
         run: |
