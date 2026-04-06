@@ -27,27 +27,24 @@ permissions:
   issues: write
 
 jobs:
-  #golangci:
-  #  strategy:
-  #    matrix:
-  #      go: [stable]
-  #      os: [ubuntu-latest, macos-latest, windows-latest]
-  #  name: lint
-  #  runs-on: ${{ matrix.os }}
-  #  steps:
-  #    - uses: actions/checkout@v6
-  #    - uses: actions/setup-go@v6
-  #      with:
-  #        go-version: ${{ matrix.go }}
-  #    - name: golangci-lint
-  #      uses: golangci/golangci-lint-action@v9
-  #      with:
-  #        version: v2.11
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version: ${{ matrix.go }}
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: v2.11
 
   release:
     uses: Cloud-for-You/github-workflows/.github/workflows/release-please.yaml@main
 
   build-dev-docker-image:
+    name: Build dev docker image
     runs-on: ubuntu-latest
     needs:
       - release
@@ -87,6 +84,7 @@ jobs:
           retention-days: 1
     
   build-release-docker-image:
+    name: Build release docker image
     runs-on: ubuntu-latest
     needs:
       - release
@@ -126,6 +124,7 @@ jobs:
           retention-days: 1
 
   publish:
+    name: Publish docker image
     runs-on: ubuntu-latest
     outputs:
       image: ${{ steps.meta.outputs.tags }}
@@ -183,6 +182,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   code-quality:
+    name: Code quality and vulnerability scan
     runs-on: ubuntu-latest
     needs:
       - publish
@@ -196,6 +196,7 @@ jobs:
           format: "table"
 
   deploy-dev:
+    name: Deploy to DEV
     runs-on: ubuntu-latest
     needs:
       - publish
@@ -206,6 +207,7 @@ jobs:
           echo "Built image: ${{ needs.publish.outputs.image }}"
 
   deploy-stage:
+    name: Deploy to STAGE
     runs-on: ubuntu-latest
     environment: stage
     if: always() && !failure() && !cancelled() && (contains(fromJSON('["success"]'), needs.publish.result))
@@ -219,6 +221,7 @@ jobs:
           echo "Deploying to stage: ${{ needs.publish.outputs.image }}"
 
   deploy-prod:
+    name: Deploy to PROD
     runs-on: ubuntu-latest
     environment: production
     if: always() && !failure() && !cancelled() && (contains(fromJSON('["success"]'), needs.publish.result))
