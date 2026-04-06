@@ -134,7 +134,7 @@ jobs:
           if [[ "${{ needs.build-release-docker-image.result }}" == "success" ]]; then
             echo "TAG=type=semver,pattern={{version}},value=${{ needs.release.outputs.release_tag_name }}" >> $GITHUB_ENV
           else
-            echo "TAG=type=sha,enable=true,priority=100,prefix=sha-,suffix=,format=short" >> $GITHUB_ENV
+            echo "TAG=type=sha,enable=true,priority=100,prefix=dev-,suffix=,format=short" >> $GITHUB_ENV
           fi
       - name: Docker meta
         id: meta
