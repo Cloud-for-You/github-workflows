@@ -189,9 +189,11 @@ jobs:
   deploy-stage:
     runs-on: ubuntu-latest
     environment: stage
+    if: always() && !failure() && !cancelled() && (contains(fromJSON('["success"]'), needs.publish.result))
     needs:
       - publish
       - code-quality
+      - deploy-dev
     steps:
       - name: Deploy to stage
         run: |
@@ -200,8 +202,10 @@ jobs:
   deploy-prod:
     runs-on: ubuntu-latest
     environment: production
+    if: always() && !failure() && !cancelled() && (contains(fromJSON('["success"]'), needs.publish.result))
     needs:
       - publish
+      - code-quality
       - deploy-stage
     steps:
       - name: Deploy to prod
