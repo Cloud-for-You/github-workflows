@@ -27,6 +27,23 @@ permissions:
   issues: write
 
 jobs:
+  #golangci:
+  #  strategy:
+  #    matrix:
+  #      go: [stable]
+  #      os: [ubuntu-latest, macos-latest, windows-latest]
+  #  name: lint
+  #  runs-on: ${{ matrix.os }}
+  #  steps:
+  #    - uses: actions/checkout@v6
+  #    - uses: actions/setup-go@v6
+  #      with:
+  #        go-version: ${{ matrix.go }}
+  #    - name: golangci-lint
+  #      uses: golangci/golangci-lint-action@v9
+  #      with:
+  #        version: v2.11
+
   release:
     uses: Cloud-for-You/github-workflows/.github/workflows/release-please.yaml@main
 
@@ -117,6 +134,8 @@ jobs:
       - build-release-docker-image
       - build-dev-docker-image
     if: ${{ always() && !failure() && !cancelled() && ((contains(fromJSON('["success"]'), needs.build-release-docker-image.result) || contains(fromJSON('["success"]'), needs.build-dev-docker-image.result))) }}
+    env:
+      DOCKER_BUILD_RECORD_UPLOAD: "false"
     steps:
       - name: Checkout
         uses: actions/checkout@v6
