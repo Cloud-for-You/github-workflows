@@ -213,30 +213,30 @@ jobs:
         run: |
           echo "Built image: ${{ needs.publish.outputs.image }}"
 
-  deploy-stage:
-    name: Deploy to STAGE
-    runs-on: ubuntu-latest
-    environment: stage
-    if: always() && !failure() && !cancelled() && (contains(fromJSON('["success"]'), needs.publish.result))
-    needs:
-      - publish
-      - code-quality
-      - deploy-dev
-    steps:
-      - name: Deploy to stage
-        run: |
-          echo "Deploying to stage: ${{ needs.publish.outputs.image }}"
-
-  deploy-prod:
-    name: Deploy to PROD
-    runs-on: ubuntu-latest
-    environment: production
-    if: always() && !failure() && !cancelled() && (contains(fromJSON('["success"]'), needs.publish.result))
-    needs:
-      - publish
-      - code-quality
-      - deploy-stage
-    steps:
-      - name: Deploy to prod
-        run: |
-          echo "Deploying to prod: ${{ needs.publish.outputs.image }}"
+#  deploy-stage:
+#    name: Deploy to STAGE
+#    runs-on: ubuntu-latest
+#    environment: stage
+#    if: always() && !failure() && !cancelled() && (contains(fromJSON('["success"]'), needs.publish.result))
+#    needs:
+#      - publish
+#      - code-quality
+#      - deploy-dev
+#    steps:
+#      - name: Deploy to stage
+#        run: |
+#          echo "Deploying to stage: ${{ needs.publish.outputs.image }}"
+#
+#  deploy-prod:
+#    name: Deploy to PROD
+#    runs-on: ubuntu-latest
+#    environment: production
+#    if: always() && !failure() && !cancelled() && (contains(fromJSON('["success"]'), needs.publish.result))
+#    needs:
+#      - publish
+#      - code-quality
+#      - deploy-stage
+#    steps:
+#      - name: Deploy to prod
+#        run: |
+#          echo "Deploying to prod: ${{ needs.publish.outputs.image }}"
